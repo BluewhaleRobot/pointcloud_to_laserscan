@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <!-- run pointcloud_to_laserscan node -->
+    <node pkg="tf" type="static_transform_publisher" name="baselink2kinect_scan"
+    args="0.1 0 0.3 0 0 0 base_link kinect_link 100" />  
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+
+        <remap from="cloud_in" to="/kinect/depth/points"/>
+        <remap from="scan" to="/kinect/scan"/>
+        <rosparam>
+            target_frame: kinect_link # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.1
+            min_height: -0.2
+            max_height: 1.0
+
+            angle_min: -0.79 # -M_PI
+            angle_max: 0.79 # M_PI
+            angle_increment: 0.003 # 0.17degree
+            scan_time: 0.05
+            range_min: 0.45
+            range_max: 5.0
+            use_inf: true
+            inf_epsilon: 1.0
+
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 1
+        </rosparam>
+
+    </node>
+
+</launch>
